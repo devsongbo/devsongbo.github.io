@@ -1,0 +1,657 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一、iOS中的沙盒机制 iOS应用程序只能对自己创建的文件系统读取文件，这个独立、封闭、安全的空间，叫做沙盒。每个ios应用都有自己的应用沙盒，应用沙盒就是文件系统目录，与其他应用的文件系统隔离。它一般存放着程序包文件（可执行文件）、图片、音频、视频、plist文件、sqlite数据库以及其他文件。每个应用程序都有自己的独立的存储空间（沙盒）一般来说应用程序之间是不可以互相访问的，在ios8中已经">
+<meta property="og:type" content="article">
+<meta property="og:title" content="沙盒文件以及沙盒文件路径、和本地存储">
+<meta property="og:url" content="http://yoursite.com/2017/06/14/沙盒文件以及沙盒文件路径、和本地存储/index.html">
+<meta property="og:site_name" content="songbooks">
+<meta property="og:description" content="一、iOS中的沙盒机制 iOS应用程序只能对自己创建的文件系统读取文件，这个独立、封闭、安全的空间，叫做沙盒。每个ios应用都有自己的应用沙盒，应用沙盒就是文件系统目录，与其他应用的文件系统隔离。它一般存放着程序包文件（可执行文件）、图片、音频、视频、plist文件、sqlite数据库以及其他文件。每个应用程序都有自己的独立的存储空间（沙盒）一般来说应用程序之间是不可以互相访问的，在ios8中已经">
+<meta property="og:updated_time" content="2017-06-14T08:55:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="沙盒文件以及沙盒文件路径、和本地存储">
+<meta name="twitter:description" content="一、iOS中的沙盒机制 iOS应用程序只能对自己创建的文件系统读取文件，这个独立、封闭、安全的空间，叫做沙盒。每个ios应用都有自己的应用沙盒，应用沙盒就是文件系统目录，与其他应用的文件系统隔离。它一般存放着程序包文件（可执行文件）、图片、音频、视频、plist文件、sqlite数据库以及其他文件。每个应用程序都有自己的独立的存储空间（沙盒）一般来说应用程序之间是不可以互相访问的，在ios8中已经">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/14/沙盒文件以及沙盒文件路径、和本地存储/"/>
+
+
+
+
+
+  <title>沙盒文件以及沙盒文件路径、和本地存储 | songbooks</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">songbooks</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Startseite
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archiv
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/14/沙盒文件以及沙盒文件路径、和本地存储/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="songbos">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="songbooks">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">沙盒文件以及沙盒文件路径、和本地存储</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T16:51:34+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一、iOS中的沙盒机制</p>
+<p>iOS应用程序只能对自己创建的文件系统读取文件，这个独立、封闭、安全的空间，叫做沙盒。每个ios应用都有自己的应用沙盒，应用沙盒就是文件系统目录，与其他应用的文件系统隔离。它一般存放着程序包文件（可执行文件）、图片、音频、视频、plist文件、sqlite数据库以及其他文件。每个应用程序都有自己的独立的存储空间（沙盒）一般来说应用程序之间是不可以互相访问的，在ios8中已经开放访问，模拟器沙盒的位置路径：/User/userName/Library/Application Support/iPhone Simulator；当我们创建应用程序时，在每个沙盒中含有三个文件，分别是Document、Library（下面有Caches和Preferences目录）和temp。<br>应用程序包：包含所有的资源文件和可执行文件。</p>
+<p>二、对Document、Library（下面有Caches和Preferences目录）和temp做简单介绍</p>
+<p>1.Document：一般需要持久的数据都放在此目录中，可以在当中添加子文件夹，iTunes备份和恢复的时候，会包括此目录。</p>
+<p>2.Library：设置程序的默认设置和其他状态信息，iTunes会自动备份该目录，例如杂志、新闻、地图应用使用的数据库缓存文件和可下载内容应该保存到这个文件夹。一般可以重新下载或者重新生成的数据应该保存在 <application_home>/Library/Caches 目录下面。<br>Libaray/Caches:存放缓存文件，iTunes不会备份此目录，此目录下文件不会在应用退出删除。一般存放体积比较大，不是特别重要的资源。<br>Libaray/PreferencePanes:保存应用的所有偏好设置，ios的Settings（设置）应用会在该目录中查找应用的设置信息，iTunes会自动备份该目录。</application_home></p>
+<p>3.temp：创建临时文件的目录，当iOS设备重启时，文件会被自动清除，只是临时使用的数据应该保存到 <application_home>/tmp 文件夹。iCloud 不会备份这些文件，下次启动应用自动删除。</application_home></p>
+<p>三、获取沙盒路径</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Home目录  </span></div><div class="line"><span class="built_in">NSString</span> *homeDirectory = <span class="built_in">NSHomeDirectory</span>();   </div><div class="line"></div><div class="line"><span class="comment">//Document目录  </span></div><div class="line"><span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);     </div><div class="line"><span class="built_in">NSString</span> *path = [paths objectAtIndex:<span class="number">0</span>];     </div><div class="line"></div><div class="line"><span class="comment">//Cache目录  </span></div><div class="line"><span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSCachesDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);     </div><div class="line"><span class="built_in">NSString</span> *path = [paths objectAtIndex:<span class="number">0</span>];     </div><div class="line"></div><div class="line"><span class="comment">//PreferencePanes目录  </span></div><div class="line"><span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSPreferencePanesDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);  </div><div class="line"><span class="built_in">NSString</span> *path = [paths objectAtIndex:<span class="number">0</span>];  </div><div class="line"></div><div class="line"><span class="comment">//Libaray目录NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);     </span></div><div class="line"><span class="built_in">NSString</span> *path = [paths objectAtIndex:<span class="number">0</span>];     </div><div class="line"></div><div class="line"><span class="comment">//tmp目录   </span></div><div class="line"><span class="built_in">NSString</span> *tmpDir = <span class="built_in">NSTemporaryDirectory</span>();</div></pre></td></tr></table></figure>
+<p>四、本地存储</p>
+<p>1、plist存储</p>
+<p>• 把一些系统自带的OC对象生成pilst文件存储起来。<br>1&gt; 了解数据存储：数据存储一般有两个操作，一个存，一个取。拖两个按钮，一个用来存，一个用来取<br>2&gt; plist存储原理：<br>• 只要有writeToFile的对象，就能进行plist存储，调用writeToFile就能自动生成plist格式的文件。<br>• 一般常用的Foundation对象都有这个方法，数组，字典，字符串等<br>3&gt; 如何写入到沙盒，需要获取沙盒路径。<br>• 获取Documents路径<br>• 拼接文件名，因为数据是写入到文件中，不是写入到文件夹中。路径之间通过/分开的，为了避免自己写/，会用stringByAppendingPathCompent，自动在文件夹与文件之间添加/。<br>4&gt; 如何读取，存储是什么类型存储，读取出来也是什么类型，直接用存储的类型，解析文件就好，用ContentsOfFile解析。<br>5&gt; 注意plist存储，不能存储自定义对象，会失败的。</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//    1.获取home路径</span></div><div class="line">    <span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);</div><div class="line">    <span class="built_in">NSString</span> *path = [paths objectAtIndex:<span class="number">0</span>];</div><div class="line"><span class="comment">//    2.拼接路径创建plist文件</span></div><div class="line">    <span class="built_in">NSString</span> *docPath = [path stringByAppendingPathComponent:<span class="string">@"2.plist"</span>];</div><div class="line"><span class="comment">//    3.创建一个数组,存储数据到plist文件中</span></div><div class="line">    <span class="built_in">NSArray</span> *persons = @[<span class="string">@"zhangsan"</span>,<span class="string">@"lisi"</span>,<span class="string">@"王六"</span>];</div><div class="line"><span class="comment">//    4.把数据写入到文件中</span></div><div class="line">   [ persons writeToFile:docPath atomically:<span class="literal">YES</span>];</div><div class="line"><span class="comment">//  5.读取文件的内容（注意存的是什么，用什么格式接收）</span></div><div class="line">    <span class="built_in">NSArray</span>* readArray = [<span class="built_in">NSArray</span> arrayWithContentsOfFile:docPath];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,readArray);</div></pre></td></tr></table></figure>
+<p>2、偏好设置</p>
+<p>1&gt; 什么是偏好设置存储：就是保存一些基本的信息，账号，密码，状态。<br>    2&gt; 偏好设置原理：不需要关心文件名，直接通过NSUserDefaults操作，默认就存到偏好设置里面了。<br>    • 通过NSUserDefaults就能直接访问软件的偏好设置(Library/Preferences)<br>    3&gt; 怎么利用偏好设置存储?利用NSUserDefaults调用setObject:forKey存储。<br>    • 偏好设置底层实现原理：底层其实就是利用一个字典，存储一些键值对。<br>    • 偏好设置好处：能快速存储一些键值对，如果用字典去存储，还需要获取文件名比较麻烦。<br>    • 偏好设置坏处：不能及时存储，需要做同步操作，把内存中的数据同步到硬盘上。<br>    4&gt; 怎么利用偏好设置读取?和字典一样，根据刚刚存储的Key读取。<br>//使用偏好设置(存储数据)</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//   1,获取Default对象,通过这个对象来存储数据</span></div><div class="line">    <span class="built_in">NSUserDefaults</span> *userDefault = [<span class="built_in">NSUserDefaults</span> standardUserDefaults];</div><div class="line"><span class="comment">//    2.通过这个对象来存储数据</span></div><div class="line">    [userDefault setObject:<span class="string">@"zhangsan"</span> forKey:<span class="string">@"name"</span>];</div><div class="line">    [userDefault setObject:<span class="string">@"163.com"</span> forKey:<span class="string">@"email"</span>];</div><div class="line">    [userDefault setBool:<span class="literal">YES</span> forKey:<span class="string">@"gender"</span>];</div><div class="line"><span class="comment">//    3.立即同步</span></div><div class="line">    [userDefault synchronize];</div><div class="line"><span class="comment">//取数据</span></div><div class="line"><span class="comment">//    1.获取Default对象</span></div><div class="line">    <span class="built_in">NSUserDefaults</span> *userDefault = [<span class="built_in">NSUserDefaults</span> standardUserDefaults];</div><div class="line"><span class="comment">//    2.通过这个对象来读取数据</span></div><div class="line">    <span class="built_in">NSString</span> *name =  [userDefault objectForKey:<span class="string">@"name"</span>];</div><div class="line">    <span class="built_in">NSString</span> *email = [userDefault objectForKey:<span class="string">@"email"</span>];</div><div class="line">    <span class="built_in">BOOL</span> gender = [userDefault boolForKey:<span class="string">@"gender"</span>];</div><div class="line"><span class="comment">////    3.同步</span></div><div class="line">    [userDefault synchronize];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@----%@---%d"</span>,name,email,gender);</div></pre></td></tr></table></figure>
+<p>3、自定义对象归档(归档：数据存储)</p>
+<p>1&gt; 自定义对象如何归档：用NSKeyedArchiver,调用archiveRootObject:toFile:方法，需要传一个对象，自定义一个对象，传进去。<br>• 会报错,说对象没有encodeWithCoder方法，说明归档的时候默认会调用这个方法，去实现这个方法。<br>• 默认打不出encodeWithCoder，必须遵守NSCoding协议才能实现这个方法。<br>• encodeWithCoder什么时候调用：对象归档时候调用<br>• encodeWithCoder作用：告诉系统对象里的哪些属性需要归档，怎么去归档，根据一个key去归档，目的就是以后取的时候，也根据这个key去取数据。<br>2&gt; 自定义对象如何解档:用NSKeyedUnarchiver,调用unarchiveObjectWithFile方法，需要传一个文件名。<br>• 会报错,说对象没有initWithCoder方法，说明解档的时候默认会调用这个方法，去实现这个方法。<br>• initWithCoder什么时候调用：对象解档时候调用<br>• initWithCoder作用：告诉系统对象里的哪些属性需要解档，怎么去解档，根据之前存储的key去解档<br>• initWithCoder是一个初始化方法，需要先初始化父类的，但是不能调用[super initWithCoder:],因为父类NSObject没有遵守NSCoding协议。<br>3&gt; initWithCoder什么时候需要调用[super initWithCoder:]<br>• initWithCoder原理:只要解析文件就会调用，xib,storyboard都是文件，因此只要解析这两个文件，就会调用initWithCoder。<br>• 因此如果在storyboard使用自定义view,重写initWithCoder方法，一定要调用[super initWithCoder:]，因为只有系统才知道怎么解析storyboard，如果没有调用，就解析不了这个文件。</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"HMPerson.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">HMPerson</span></span></div><div class="line"><span class="comment">//用来告诉系统怎么来存储数据(告诉系统各个字段怎么进行存储)</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)encodeWithCoder:(<span class="built_in">NSCoder</span> *)aCoder&#123;</div><div class="line">    [aCoder encodeObject:<span class="keyword">self</span>.name forKey:<span class="string">@"name"</span>];</div><div class="line">    [aCoder encodeObject:<span class="keyword">self</span>.email forKey:<span class="string">@"email"</span>];</div><div class="line">    [aCoder encodeInteger:<span class="keyword">self</span>.age forKey:<span class="string">@"age"</span>];</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="comment">//通过这个方法来实现怎么读取数据</span></div><div class="line">- (<span class="keyword">instancetype</span>)initWithCoder:(<span class="built_in">NSCoder</span> *)aDecoder&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</div><div class="line">       <span class="keyword">self</span>.name =  [aDecoder decodeObjectForKey:<span class="string">@"name"</span>];</div><div class="line">        <span class="keyword">self</span>.email = [aDecoder decodeObjectForKey:<span class="string">@"email"</span>];</div><div class="line">        <span class="keyword">self</span>.age =  [aDecoder decodeIntForKey:<span class="string">@"age"</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"><span class="comment">//点击屏幕的时候就会调用这个方法</span></div><div class="line">- (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event&#123;</div><div class="line"></div><div class="line"><span class="comment">//  1.创建对象</span></div><div class="line">    HMPerson *person = [[HMPerson alloc]init];</div><div class="line">    person.name = <span class="string">@"zhansan"</span>;</div><div class="line">    person.email = <span class="string">@"1234@qq.com"</span>;</div><div class="line">    person.age = <span class="number">30</span>;</div><div class="line"><span class="comment">//    2.存储对象(通过NSKeyedArchiver存储数据)</span></div><div class="line">    [<span class="built_in">NSKeyedArchiver</span> archiveRootObject:person toFile:[<span class="keyword">self</span> getDataPath]];</div><div class="line"><span class="comment">//    3.读取数据</span></div><div class="line">    [<span class="keyword">self</span> readData];</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="comment">//读取数据</span></div><div class="line">- (<span class="keyword">void</span>)readData&#123;</div><div class="line">   HMStudent *student = [<span class="built_in">NSKeyedUnarchiver</span> unarchiveObjectWithFile:[<span class="keyword">self</span> getDataPath]];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@---%@--%d--%@"</span>,student.name,student.email,student.age,student.studentId);</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSString</span> *)getDataPath&#123;</div><div class="line"><span class="comment">//    1.获取路径</span></div><div class="line">    <span class="built_in">NSString</span> *docPath = [<span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>)lastObject];</div><div class="line"></div><div class="line"><span class="comment">//    2.拼接路径</span></div><div class="line">    <span class="built_in">NSString</span> *dataPath = [docPath stringByAppendingPathComponent:<span class="string">@"student.data"</span>];</div><div class="line"></div><div class="line"><span class="comment">//</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,dataPath);</div><div class="line">    <span class="keyword">return</span> dataPath;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="comment">//归档成二进制数据,然后进行偏好设置存储二进制数据</span></div><div class="line"><span class="built_in">NSData</span> * normalData = [<span class="built_in">NSKeyedArchiver</span> archivedDataWithRootObject:normalTempArray];</div><div class="line"></div><div class="line">[ud setObject:normalData forKey:<span class="string">@"normalPlaneCity"</span>];</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/13/NSArray的基本使用/" rel="next" title="NSArray的基本使用">
+                <i class="fa fa-chevron-left"></i> NSArray的基本使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/20/Cocoapods-打造本地-pod-库/" rel="prev" title="Cocoapods: 打造本地 pod 库">
+                Cocoapods: 打造本地 pod 库 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="songbos" />
+          <p class="site-author-name" itemprop="name">songbos</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">Artikel</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">songbos</span>
+</div>
+
+
+<div class="powered-by">
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
